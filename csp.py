@@ -16,7 +16,8 @@ class Constraints:
             if variable not in self.variables:
                 raise LookupError("Variable is not defined before")
             else:
-                np.append(self.constraints[variable], constraint)
+                self.constraints[variable] = np.append(self.constraints[variable], constraint)
+                # print(self.constraints)
 
     def isValid(self, variable, variableToDomain):
         for constraint in self.constraints[variable]:
@@ -25,9 +26,9 @@ class Constraints:
         return True
     
     def backtrackingSearch(self, variableToDomain = {}):
-        print(f"{len(variableToDomain)} - {len(self.variables)} \n {variableToDomain}")
+        # print(f"{len(variableToDomain)} - {len(self.variables)} \n {variableToDomain}")
         if len(variableToDomain) == len(self.variables):
-            print("Parou")
+            # print("Parou")
             return variableToDomain
 
         remainingVariables = np.setdiff1d(self.variables, list(variableToDomain.keys()), True)
