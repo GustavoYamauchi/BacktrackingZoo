@@ -35,15 +35,17 @@ class Constraints:
         for domain in self.domains[chosenVariable]:
             variableToDomainLocal = variableToDomain.copy()
             variableToDomainLocal[chosenVariable] = domain
+            domainsCopy = self.domains.copy()
 
             if self.isValid(chosenVariable, variableToDomainLocal):
-                self.forwardChecking(chosenVariable)
+                self.forwardChecking(chosenVariable, domain)
                 result = self.backtrackingSearch(variableToDomainLocal)
                 if result is not None:
                     return result
+
+            self.domains = domainsCopy
         return None
 
-    def forwardChecking(self, chosenVariable):
+    def forwardChecking(self, chosenVariable, chosenDomain):
         for constraint in self.constraints[chosenVariable]:
-            print(constraint)
-            # TODO: Remover dominios das variaveis em que a chosenVariable possui uma restrição
+            self.domains = constraint.removeInvalidDomains(chosenVariable, chosenDomain, self.domains)

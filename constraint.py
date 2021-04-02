@@ -9,6 +9,9 @@ class Constraint():
     def isSatisfied(self, variableToDomain):
         return True
 
+    def removeInvalidDomains(self, _0, _1, domains):
+        return domains
+
 class NotEqual(Constraint):
     def __init__(self, v1, v2):
         super().__init__([v1, v2])
@@ -19,6 +22,13 @@ class NotEqual(Constraint):
             return True
         domains = [variableToDomain[variable] for variable in self.variables]
         return len(set(domains)) == len(domains)
+
+    def removeInvalidDomains(self, chosenVariable, chosenDomain, domains):
+        otherVariable = list(filter(lambda var: var != chosenVariable, self.variables))[0]
+
+        domains[otherVariable] = np.fromiter((domain for domain in domains[otherVariable] if domain != chosenDomain), dtype=domains[otherVariable].dtype)
+
+        return domains
 
     def __str__(self):
         return f"The domain of {self.variables[0]} should not be equal to {self.variables[1]}"
@@ -34,6 +44,13 @@ class Equal(Constraint):
         domains = [variableToDomain[variable] for variable in self.variables]
         return len(set(domains)) == 1
 
+    def removeInvalidDomains(self, chosenVariable, chosenDomain, domains):
+        otherVariable = list(filter(lambda var: var != chosenVariable, self.variables))[0]
+
+        domains[otherVariable] = np.fromiter((domain for domain in domains[otherVariable] if domain == chosenDomain), dtype=domains[otherVariable].dtype)
+
+        return domains
+
     def __str__(self):
         return f"The domain of {self.variables[0]} should be equal to {self.variables[1]}"
 
@@ -47,6 +64,13 @@ class NotAdjacent(Constraint):
             return True
         domains = [variableToDomain[variable] for variable in self.variables]
         return abs(reduce(sub, domains)) > 1
+
+    def removeInvalidDomains(self, chosenVariable, chosenDomain, domains):
+        otherVariable = list(filter(lambda var: var != chosenVariable, self.variables))[0]
+
+        domains[otherVariable] = np.fromiter((domain for domain in domains[otherVariable] if abs(domain - chosenDomain) > 1), dtype=domains[otherVariable].dtype)
+
+        return domains
 
     def __str__(self):
         return f"The domain of {self.variables[0]} should not be adjacent to {self.variables[1]}"
