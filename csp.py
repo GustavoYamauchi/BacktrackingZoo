@@ -26,30 +26,24 @@ class Constraints:
         return True
     
     def backtrackingSearch(self, variableToDomain = {}):
-        # print(f"{len(variableToDomain)} - {len(self.variables)} \n {variableToDomain}")
         if len(variableToDomain) == len(self.variables):
-            # print("Parou")
             return variableToDomain
 
         remainingVariables = np.setdiff1d(self.variables, list(variableToDomain.keys()), True)
-        # copyDomain = 
     
         chosenVariable = remainingVariables[0]
-        for value in self.domains[chosenVariable]:
+        for domain in self.domains[chosenVariable]:
             variableToDomainLocal = variableToDomain.copy()
-            variableToDomainLocal[chosenVariable] = value
+            variableToDomainLocal[chosenVariable] = domain
 
             if self.isValid(chosenVariable, variableToDomainLocal):
-                # forwardChecking(remainingVariables, variableToDomainLocal, )
+                self.forwardChecking(chosenVariable)
                 result = self.backtrackingSearch(variableToDomainLocal)
                 if result is not None:
                     return result
         return None
 
-    def forwardChecking(self, remainingVariables, variableToDomain, domain):
-        for variable in remainingVariables:
-            for constraint in self.constraints[variable]:
-                if not constraint.isSatisfied(variableToDomain):
-                    domains[variable] = domains[variable != domain]
-                    # a = np.array([1,2,3,4])
-                    # print(a[a != 3]) 
+    def forwardChecking(self, chosenVariable):
+        for constraint in self.constraints[chosenVariable]:
+            print(constraint)
+            # TODO: Remover dominios das variaveis em que a chosenVariable possui uma restrição

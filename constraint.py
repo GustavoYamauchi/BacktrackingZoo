@@ -1,5 +1,6 @@
 import numpy as np
 from functools import reduce
+from operator import sub
 
 class Constraint():
     def __init__(self, variables):
@@ -19,6 +20,9 @@ class NotEqual(Constraint):
         domains = [variableToDomain[variable] for variable in self.variables]
         return len(set(domains)) == len(domains)
 
+    def __str__(self):
+        return f"The domain of {self.variables[0]} should not be equal to {self.variables[1]}"
+
 class Equal(Constraint):
     def __init__(self, v1, v2):
         super().__init__([v1, v2])
@@ -30,6 +34,9 @@ class Equal(Constraint):
         domains = [variableToDomain[variable] for variable in self.variables]
         return len(set(domains)) == 1
 
+    def __str__(self):
+        return f"The domain of {self.variables[0]} should be equal to {self.variables[1]}"
+
 class NotAdjacent(Constraint):
     def __init__(self, v1, v2):
         super().__init__([v1, v2])
@@ -39,4 +46,7 @@ class NotAdjacent(Constraint):
         if not all(variable in variableToDomain for variable in self.variables):
             return True
         domains = [variableToDomain[variable] for variable in self.variables]
-        return abs(reduce(lambda total, element: total - variableToDomain[element])) > 1
+        return abs(reduce(sub, domains)) > 1
+
+    def __str__(self):
+        return f"The domain of {self.variables[0]} should not be adjacent to {self.variables[1]}"
