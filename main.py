@@ -1,5 +1,5 @@
 import numpy as np
-from csp import Constraints
+from csp import CSP
 from constraint import *
 
 def getOptimization():
@@ -21,7 +21,7 @@ variables = np.array(["Leão","Antílope","Hiena","Tigre","Pavão","Suricato","J
 domains = {}
 for variable in variables:
     domains[variable] = np.array([1, 2, 3, 4])
-problem = Constraints(variables, domains)
+problem = CSP(variables, domains)
 problem.addConstraint(NotEqual("Leão", "Tigre"))
 problem.addConstraint(NotEqual("Leão", "Pavão"))
 problem.addConstraint(NotEqual("Tigre", "Suricato"))

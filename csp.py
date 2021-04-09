@@ -1,6 +1,6 @@
 import numpy as np
 
-class Constraints:
+class CSP:
     def __init__(self, variables, domains):
         self.variables = variables
         self.domains = domains
@@ -53,8 +53,8 @@ class Constraints:
 
         for domain in self.domains[chosenVariable]:
             variableToDomainLocal = variableToDomain.copy()
-            variableToDomainLocal[chosenVariable] = domain
             domainsCopy = self.domains.copy()
+            variableToDomainLocal[chosenVariable] = domain
 
             if self.isValid(chosenVariable, variableToDomainLocal):
                 self.forwardChecking(chosenVariable, domain)
