@@ -24,14 +24,33 @@ class Constraints:
             if not constraint.isSatisfied(variableToDomain):
                 return False
         return True
-    
-    def backtrackingSearch(self, variableToDomain = {}):
+
+    def mcv(self, remainingVariables):
+        maxCount = float('-inf')
+        chosenVariable = ""
+        for variable in remainingVariables:
+            if len(self.constraints[variable]) > maxCount:
+                maxCount = len(self.constraints[variable])
+                chosenVariable = variable
+        return chosenVariable
+
+    def mrv(self, remainingVariables):
+        minOccurence = float('inf')
+        chosenVariable = ""
+        for variable in remainingVariables:
+            if len(self.domains[variable]) < minOccurence:
+                minOccurence = len(self.domains[variable])
+                chosenVariable = variable
+        return chosenVariable
+
+    def backtrackingSearch(self, useMRV, variableToDomain = {}):
         if len(variableToDomain) == len(self.variables):
             return variableToDomain
 
         remainingVariables = np.setdiff1d(self.variables, list(variableToDomain.keys()), True)
-    
-        chosenVariable = remainingVariables[0]
+        
+        chosenVariable = self.mrv(remainingVariables) if useMRV else self.mcv(remainingVariables)
+
         for domain in self.domains[chosenVariable]:
             variableToDomainLocal = variableToDomain.copy()
             variableToDomainLocal[chosenVariable] = domain
@@ -39,11 +58,14 @@ class Constraints:
 
             if self.isValid(chosenVariable, variableToDomainLocal):
                 self.forwardChecking(chosenVariable, domain)
-                result = self.backtrackingSearch(variableToDomainLocal)
-                if result is not None:
+                print(f"Set variables: {variableToDomainLocal}")
+                result = self.backtrackingSearch(useMRV, variableToDomainLocal)
+
+                if result is not None:                    
                     return result
 
             self.domains = domainsCopy
+        print(f"Backtracking: {variableToDomain}")
         return None
 
     def forwardChecking(self, chosenVariable, chosenDomain):

@@ -74,3 +74,22 @@ class NotAdjacent(Constraint):
 
     def __str__(self):
         return f"The domain of {self.variables[0]} should not be adjacent to {self.variables[1]}"
+
+class SpecificDomain(Constraint):
+    def __init__(self, v1, d):
+        super().__init__([v1])
+        self.variables = [v1]
+        self.domain = d
+
+    def isSatisfied(self, variableToDomain):
+        variable = self.variables[0]
+        if not variable in variableToDomain:
+            return True
+        choosenDomain = variableToDomain[variable]
+        return self.domain == choosenDomain
+
+    def removeInvalidDomains(self, _0, _1, domains):
+        return domains
+
+    def __str__(self):
+        return f"The domain of {self.variables[0]} should be equal to {self.domain}"

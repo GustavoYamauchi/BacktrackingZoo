@@ -1,29 +1,21 @@
-# print("Deseja utilizar: 0 - MCV | 1 - MRV")
-# inputString = -1
-
-# # mcv() if inputString == 0 else mrv()
-
-
-# while inputString not in ["0", "1"]:
-#     inputString = input()
-#     if inputString == "0": 
-#         resultado = "mcv"
-#     elif inputString == "1":
-#         resultado = "mrv" 
-#     else:
-#         resultado = "Entrada invalida, tente novamente (0 - MCV | 1 - MRV)"
-
-#     print(resultado)
-
-
-
-# MRV -> Escolher a variável com menos opções de valores
-# MCV -> Escolher a variável com mais restrições
-
-
 import numpy as np
 from csp import Constraints
 from constraint import *
+
+def getOptimization():
+	print("Select optimization: 0 - MCV | 1 - MRV")
+	inputString = -1	
+	
+	while inputString not in ["0", "1"]:
+	    inputString = input()
+	    if inputString == "0": 
+	        result = False
+	    elif inputString == "1":
+	        result = True
+	    else:
+	       	print("Invalid input, try again (0 - MCV | 1 - MRV)")
+	print()
+	return result
 
 variables = np.array(["Leão","Antílope","Hiena","Tigre","Pavão","Suricato","Javali"])
 domains = {}
@@ -43,5 +35,7 @@ problem.addConstraint(NotEqual("Hiena", "Suricato"))
 problem.addConstraint(NotEqual("Hiena", "Javali"))
 problem.addConstraint(NotAdjacent("Antílope", "Leão"))
 problem.addConstraint(NotAdjacent("Antílope", "Tigre"))
-result = problem.backtrackingSearch()
-print("Answer not found" if result is None else result)
+problem.addConstraint(SpecificDomain("Leão", 1))
+result = problem.backtrackingSearch(getOptimization())
+print()
+print("Answer not found" if result is None else f"Answer: {result}")
